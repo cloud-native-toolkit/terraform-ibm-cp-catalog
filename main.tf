@@ -40,6 +40,15 @@ resource "null_resource" "create_entitlement_secret" {
       ENTITLEMENT_KEY = var.entitlement_key
     }
   }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "${path.module}/scripts/destroy-pull-secret.sh ${var.release_namespace} ${local.secret_name}"
+
+    environment = {
+      KUBECONFIG      = var.cluster_config_file
+    }
+  }
 }
 
 resource "null_resource" "setup_global_pull_secret" {
@@ -47,7 +56,7 @@ resource "null_resource" "setup_global_pull_secret" {
   depends_on = [null_resource.create_entitlement_secret]
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/global-pull-secret.sh ${var.cluster_type_code} ${var.release_namespace} ${local.secret_name}"
+    command = "${path.module}/scripts/add-to-global-pull-secret.sh ${var.cluster_type_code} ${var.release_namespace} ${local.secret_name}"
 
     environment = {
       KUBECONFIG      = var.cluster_config_file
