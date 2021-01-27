@@ -11,7 +11,7 @@ locals {
 }
 
 resource "helm_release" "ibm_operator_catalog" {
-  name              = "ibm-operator-catalog-enablement"
+  name              = local.chart
   repository        = local.repo
   chart             = local.chart
   namespace         = var.release_namespace
