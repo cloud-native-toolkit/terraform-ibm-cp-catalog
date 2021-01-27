@@ -32,21 +32,27 @@ resource "helm_release" "ibm_operator_catalog" {
 resource "null_resource" "create_entitlement_secret" {
   count = var.entitlement_key != "" ? 1 : 0
 
+  triggers = {
+    KUBECONFIG = var.cluster_config_file
+    namespace  = var.release_namespace
+    name       = local.secret_name
+  }
+
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create-pull-secret.sh ${var.release_namespace} ${local.secret_name}"
+    command = "${path.module}/scripts/create-pull-secret.sh ${self.triggers.namespace} ${self.triggers.name}"
 
     environment = {
-      KUBECONFIG      = var.cluster_config_file
+      KUBECONFIG      = self.triggers.KUBECONFIG
       ENTITLEMENT_KEY = var.entitlement_key
     }
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "${path.module}/scripts/destroy-pull-secret.sh ${var.release_namespace} ${local.secret_name}"
+    command = "${path.module}/scripts/destroy-pull-secret.sh ${self.triggers.namespace} ${self.triggers.name}"
 
     environment = {
-      KUBECONFIG      = var.cluster_config_file
+      KUBECONFIG      = self.triggers.KUBECONFIG
     }
   }
 }
