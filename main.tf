@@ -1,13 +1,14 @@
 provider "helm" {
-  version = ">= 1.1.1"
+  version = ">= 2.0.2"
   kubernetes {
     config_path = var.cluster_config_file
   }
 }
 
 locals {
-  repo  = "https://redhat-developer.github.io/redhat-helm-charts/"
-  chart = "ibm-operator-catalog-enablement"
+  repo        = "https://redhat-developer.github.io/redhat-helm-charts/"
+  chart       = "ibm-operator-catalog-enablement"
+  secret_name = "ibm-entitlement-key"
 }
 
 resource "helm_release" "ibm_operator_catalog" {
@@ -25,5 +26,31 @@ resource "helm_release" "ibm_operator_catalog" {
   set {
     name  = "license"
     value = "true"
+  }
+}
+
+resource "null_resource" "create_entitlement_secret" {
+  count = var.entitlement_key != "" ? 1 : 0
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/create-pull-secret.sh ${var.release_namespace} ${local.secret_name}"
+
+    environment = {
+      KUBECONFIG      = var.cluster_config_file
+      ENTITLEMENT_KEY = var.entitlement_key
+    }
+  }
+}
+
+resource "null_resource" "setup_global_pull_secret" {
+  count = var.entitlement_key != "" ? 1 : 0
+  depends_on = [null_resource.create_entitlement_secret]
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/global-pull-secret.sh ${var.cluster_type_code} ${var.release_namespace} ${local.secret_name}"
+
+    environment = {
+      KUBECONFIG      = var.cluster_config_file
+    }
   }
 }
