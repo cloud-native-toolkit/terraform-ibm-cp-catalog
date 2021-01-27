@@ -1,13 +1,11 @@
-name: ""
+name: ibm-cp4i-catalog
 type: terraform
-description: ""
+description: Base install of the Cloud Pak for Integration operator catalog and pull secrets
 tags:
     - tools
     - devops
 versions:
 - platforms:
-    - kubernetes
-    - ocp3
     - ocp4
   dependencies: []
     - id: cluster
@@ -30,11 +28,8 @@ versions:
         id: namespace
         output: name
         discriminator: tools
-#    - name: cluster_type
-#      moduleRef:
-#        id: cluster
-#        output: type_code
-#    - name: tls_secret_name
-#      moduleRef:
-#        id: cluster
-#        output: tls_secret_name
+    - name: cluster_type_code
+      moduleRef:
+        id: cluster
+        output: type_code
+
