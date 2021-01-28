@@ -7,7 +7,7 @@ tags:
 versions:
 - platforms:
     - ocp4
-  dependencies: []
+  dependencies:
     - id: cluster
       refs:
         - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
@@ -18,7 +18,7 @@ versions:
       refs:
         - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
           version: ">= 2.1.0"
-  variables: []
+  variables:
     - name: cluster_config_file
       moduleRef:
         id: cluster
@@ -32,4 +32,6 @@ versions:
       moduleRef:
         id: cluster
         output: type_code
+    - name: entitlement_key
+      scope: module
 
