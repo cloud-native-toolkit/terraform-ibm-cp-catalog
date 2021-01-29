@@ -1,4 +1,4 @@
-name: ibm-cp4i-catalog
+name: ibm-cp-catalog
 type: terraform
 description: Base install of the Cloud Pak for Integration operator catalog and pull secrets
 tags:
