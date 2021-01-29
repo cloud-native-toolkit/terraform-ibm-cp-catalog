@@ -17,8 +17,7 @@ The module depends on the following software components:
 
 ### Terraform providers
 
-- IBM Cloud provider >= 1.5.3
-- Helm provider >= 1.1.1 (provided by Terraform)
+- Helm provider >= 2.0.2 (provided by Terraform)
 
 ## Module dependencies
 
@@ -26,7 +25,6 @@ This module makes use of the output from other modules:
 
 - Cluster - github.com/ibm-garage-cloud/terraform-ibm-container-platform.git
 - Namespace - github.com/ibm-garage-clout/terraform-cluster-namespace.git
-- etc
 
 ## Example usage
 
