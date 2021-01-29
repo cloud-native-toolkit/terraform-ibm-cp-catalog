@@ -1,11 +1,52 @@
-id: github.com/ibm-garage-cloud/terraform-ibm-cp4i
-name: ibm-cp4i-catalog
+id: github.com/ibm-garage-cloud/terraform-ibm-cp-catalog
+name: ibm-cp-catalog
 type: terraform
 description: Base install of the Cloud Pak for Integration operator catalog and pull secrets
 tags:
   - tools
   - devops
 versions:
+  - platforms:
+      - ocp4
+    dependencies:
+      - id: cluster
+        refs:
+          - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
+            version: ">= 1.7.0"
+          - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
+            version: ">= 2.0.0"
+      - id: namespace
+        refs:
+          - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
+            version: ">= 2.1.0"
+    variables:
+      - name: cluster_config_file
+        moduleRef:
+          id: cluster
+          output: config_file_path
+        type: string
+        description: Cluster config file for Kubernetes cluster.
+      - name: release_namespace
+        moduleRef:
+          id: namespace
+          output: name
+          discriminator: tools
+        type: string
+        description: Name of the existing namespace where Pact Broker will be deployed.
+        optional: true
+      - name: cluster_type_code
+        moduleRef:
+          id: cluster
+          output: type_code
+        type: string
+        description: The cluster_type of the cluster
+        optional: true
+      - name: entitlement_key
+        scope: module
+        type: string
+        description: The entitlement key used to access the CP4I images in the container registry. Visit https://myibm.ibm.com/products-services/containerlibrary to get the key
+        optional: true
+    version: v1.0.4
   - platforms:
       - ocp4
     dependencies:
