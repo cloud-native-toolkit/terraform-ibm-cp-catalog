@@ -1,5 +1,9 @@
-#output "myoutput" {
-#  description = "Description of my output"
-#  value       = "value"
-#  depends_on  = [<some resource>]
-#}
+output "name" {
+  description = "The name of the catalog that was installed"
+  value       = local.catalog_name
+  depends_on  = [
+    helm_release.ibm_operator_catalog,
+    null_resource.create_entitlement_secret,
+    null_resource.setup_global_pull_secret
+  ]
+}
