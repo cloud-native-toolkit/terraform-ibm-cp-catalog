@@ -6,9 +6,10 @@ provider "helm" {
 }
 
 locals {
-  repo        = "https://redhat-developer.github.io/redhat-helm-charts/"
-  chart       = "ibm-operator-catalog-enablement"
-  secret_name = "ibm-entitlement-key"
+  repo         = "https://redhat-developer.github.io/redhat-helm-charts/"
+  chart        = "ibm-operator-catalog-enablement"
+  secret_name  = "ibm-entitlement-key"
+  catalog_name = "ibm-operator-catalog"
 }
 
 resource "helm_release" "ibm_operator_catalog" {
