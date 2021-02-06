@@ -10,13 +10,14 @@ locals {
   chart        = "ibm-operator-catalog-enablement"
   secret_name  = "ibm-entitlement-key"
   catalog_name = "ibm-operator-catalog"
+  catalog_namespace = "openshift-marketplace"
 }
 
 resource "helm_release" "ibm_operator_catalog" {
   name              = local.chart
   repository        = local.repo
   chart             = local.chart
-  namespace         = var.release_namespace
+  namespace         = local.catalog_namespace
   timeout           = 1200
   dependency_update = true
   force_update      = true
