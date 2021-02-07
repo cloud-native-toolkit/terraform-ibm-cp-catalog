@@ -13,21 +13,29 @@ locals {
   catalog_namespace = "openshift-marketplace"
 }
 
-resource "helm_release" "ibm_operator_catalog" {
-  name              = local.chart
-  repository        = local.repo
-  chart             = local.chart
-  namespace         = local.catalog_namespace
-  timeout           = 1200
-  dependency_update = true
-  force_update      = true
-  replace           = true
+resource null_resource ibm_operator_catalog {
+  triggers = {
+    KUBECONFIG=var.cluster_config_file
+    name = local.chart
+    chart = local.chart
+    repo = local.repo
+  }
 
-  disable_openapi_validation = true
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/generate-catalog-yaml.sh ${self.triggers.name} ${self.triggers.chart} ${self.triggers.repo} | kubectl apply -f -"
 
-  set {
-    name  = "license"
-    value = "true"
+    environment = {
+      KUBECONFIG = self.triggers.KUBECONFIG
+    }
+  }
+
+  provisioner "local-exec" {
+    when = destroy
+    command = "${path.module}/scripts/generate-catalog-yaml.sh ${self.triggers.name} ${self.triggers.chart} ${self.triggers.repo} | kubectl delete -f -"
+
+    environment = {
+      KUBECONFIG = self.triggers.KUBECONFIG
+    }
   }
 }
 
