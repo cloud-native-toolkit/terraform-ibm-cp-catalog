@@ -27,4 +27,4 @@ if [[ -z "${HELM}" ]]; then
   HELM="${BIN_DIR}/helm"
 fi
 
-helm template "${NAME}" "${CHART}" --repo "${REPO}" --set license=true
+${HELM} template "${NAME}" "${CHART}" --repo "${REPO}" --set license=true
