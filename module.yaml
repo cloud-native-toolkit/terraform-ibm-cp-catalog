@@ -4,6 +4,7 @@ description: Base install of the Cloud Pak for Integration operator catalog and 
 tags:
     - tools
     - devops
+provider: k8s
 versions:
 - platforms:
     - ocp4
